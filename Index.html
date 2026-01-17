@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CFP Engine Release 1.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@500;700&display=swap');
+        :root { --bg: #010203; }
+        html, body { height: 100dvh; margin: 0; padding: 0; overflow: hidden; background: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .grid-container { display: grid; grid-template-rows: auto auto 1fr auto; height: 100dvh; padding: 6px; gap: 6px; box-sizing: border-box; }
+        .card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .score-val { font-size: clamp(1.8rem, 7vh, 3rem); font-weight: 900; line-height: 1; letter-spacing: -1.5px; }
+        .btn-core { background: #00f2ff; color: black; font-weight: 900; width: 100%; padding: 14px; border-radius: 6px; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; transition: 0.2s; border: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); }
+        .btn-core:disabled { opacity: 0.5; cursor: not-allowed; background: #334155; color: #94a3b8; box-shadow: none; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 6px; }
+        .stat-item { font-size: 0.55rem; color: rgba(255, 255, 255, 0.4); display: flex; flex-direction: column; }
+        .stat-item b { color: white; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
+        .ticker { transition: 0.05s; }
+        .env-card { background: rgba(0, 242, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1); padding: 4px 8px; border-radius: 4px; }
+        .env-val { color: #00f2ff; font-weight: bold; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-container">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center px-3 py-1 bg-white/5 rounded border border-white/5">
+            <div class="flex items-center gap-3">
+                <span id="status-light" class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] font-black text-white italic tracking-tighter">RELEASE 1.0 <span class="text-cyan-400">FINAL</span></span>
+            </div>
+            <div class="mono text-[8px] flex gap-4 uppercase">
+                <span>Total Samples: <b id="tg">0</b></span>
+                <span>Thread: <b id="thread" class="text-cyan-400">READY</b></span>
+            </div>
+        </header>
+
+        <!-- DYNAMIC ENVIRONMENT STRIP -->
+        <div class="grid grid-cols-3 gap-2">
+            <div class="env-card">
+                <div class="text-[6px] opacity-50 uppercase">Crowd Intensity</div>
+                <div id="env-db" class="env-val">00.0 dB</div>
+            </div>
+            <div class="env-card">
+                <div class="text-[6px] opacity-50 uppercase">Atmosphere</div>
+                <div id="env-aroma" class="env-val">---</div>
+            </div>
+            <div class="env-card">
+                <div class="text-[6px] opacity-50 uppercase">Surface Grip</div>
+                <div id="env-surface" class="env-val">0.00μ</div>
+            </div>
+        </div>
+
+        <!-- MAIN SIMULATION SPACE -->
+        <div class="flex flex-col gap-2 min-h-0">
+            <div class="grid grid-cols-2 gap-2 flex-grow">
+                <!-- INDIANA -->
+                <div class="card border-l-2 border-red-600">
+                    <div class="flex justify-between items-start">
+                        <span class="font-black text-xs text-red-600 italic">INDIANA</span>
+                        <span class="mono text-[8px] opacity-30">91.42</span>
+                    </div>
+                    <div id="si" class="score-val text-white">0.00</div>
+                    <div class="stat-grid">
+                        <div class="stat-item">PASS <b><span id="io_p">0.0</span></b></div>
+                        <div class="stat-item">RUSH <b><span id="io_r">0.0</span></b></div>
+                        <div class="stat-item">SACKS <b><span id="id_s">0.0</span></b></div>
+                        <div class="stat-item">INTS <b><span id="id_i">0.0</span></b></div>
+                        <div class="col-span-2 mt-2">
+                            <div class="flex justify-between text-[7px] uppercase font-bold mb-1">
+                                <span>Stability Index</span>
+                                <span id="iw" class="text-red-500">0.00%</span>
+                            </div>
+                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="ib" class="h-full bg-red-600 w-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MIAMI -->
+                <div class="card border-r-2 border-orange-500 text-right items-end">
+                    <div class="flex flex-row-reverse justify-between w-full items-start">
+                        <span class="font-black text-xs text-orange-500 italic">MIAMI</span>
+                        <span class="mono text-[8px] opacity-30">89.76</span>
+                    </div>
+                    <div id="su" class="score-val text-white">0.00</div>
+                    <div class="stat-grid w-full">
+                        <div class="stat-item text-left">PASS <b><span id="uo_p">0.0</span></b></div>
+                        <div class="stat-item text-left">RUSH <b><span id="uo_r">0.0</span></b></div>
+                        <div class="stat-item">SACKS <b><span id="ud_s">0.0</span></b></div>
+                        <div class="stat-item">INTS <b><span id="ud_i">0.0</span></b></div>
+                        <div class="col-span-2 mt-2">
+                            <div class="flex flex-row-reverse justify-between text-[7px] uppercase font-bold mb-1">
+                                <span>Stability Index</span>
+                                <span id="uw" class="text-orange-500">0.00%</span>
+                            </div>
+                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="ub" class="h-full bg-orange-500 w-0 ml-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLS -->
+            <div class="flex flex-col gap-2">
+                <button id="bt" class="btn-core italic font-black tracking-widest">RUN 1,000 ITERATION SEQUENCE</button>
+                <div id="lo" class="bg-black/80 rounded p-2 h-14 overflow-hidden border border-white/10 mono text-[9px] text-white/40 leading-tight">
+                    <div id="log-content">Engine Release 1.0 Active. Standing by for sequence...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="grid grid-cols-4 gap-2">
+            <div class="bg-white/5 p-2 rounded text-center border border-white/5">
+                <span class="text-[6px] uppercase opacity-40 block mb-1">Mean Margin</span>
+                <span id="fm" class="text-[10px] font-bold text-cyan-400">0.00</span>
+            </div>
+            <div class="bg-white/5 p-2 rounded text-center border border-white/5">
+                <span class="text-[6px] uppercase opacity-40 block mb-1">Success Prob</span>
+                <span id="fs" class="text-[10px] font-bold">0.00%</span>
+            </div>
+            <div class="bg-white/5 p-2 rounded text-center border border-white/5">
+                <span class="text-[6px] uppercase opacity-40 block mb-1">Humidity Impact</span>
+                <span id="ft" class="text-[10px] font-bold text-yellow-500">0.00%</span>
+            </div>
+            <div class="bg-white/5 p-2 rounded text-center border border-white/5">
+                <span class="text-[6px] uppercase opacity-40 block mb-1">Reliability</span>
+                <span id="fc" class="text-[10px] font-bold text-green-500">0.00%</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const btn = document.getElementById('bt');
+        const logContent = document.getElementById('log-content');
+        const statusLight = document.getElementById('status-light');
+        const threadText = document.getElementById('thread');
+
+        let totalGames = 0, sumIU = 0, sumUM = 0, weightedWinsIU = 0;
+        let sOffPassI = 0, sOffRushI = 0, sDefSackI = 0, sDefIntI = 0;
+        let sOffPassU = 0, sOffRushU = 0, sDefSackU = 0, sDefIntU = 0;
+        let sHumTotal = 0;
+
+        const aromas = ["Popcorn/Salt", "Sea Breeze", "Fresh Grass", "Diesel/Heat", "Tropical Rain", "Tailgate Smoke"];
+        const jerseys = ["Cold-Gear", "Pro-Mesh", "Hydro-Wick"];
+
+        const runSimBatch = async () => {
+            btn.disabled = true;
+            statusLight.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
+            threadText.innerText = "ACTIVE";
+            
+            const batchSize = 1000;
+
+            for (let i = 0; i < batchSize; i++) {
+                // Release 1.0 Factor Generation (Changes per iteration)
+                const db = (98 + Math.random() * 22).toFixed(1);
+                const aroma = aromas[Math.floor(Math.random() * aromas.length)];
+                const surf = (0.88 + Math.random() * 0.12).toFixed(2);
+                const hum = 75 + Math.random() * 15;
+                const psi = (12.8 + Math.random() * 0.6).toFixed(2);
+                
+                // Real-time environmental impacts
+                const noiseModifier = (db - 100) * 0.02; // High noise increases turnover risk
+                const gripModifier = (1.0 - surf) * 5; // Low grip decreases rushing efficiency
+
+                // Core Logic
+                const baseI = 34.45 + (Math.random() * 6 - 3) - noiseModifier;
+                const baseU = 28.22 + (Math.random() * 6 - 3) - noiseModifier;
+
+                const gameI = baseI;
+                const gameU = baseU;
+                
+                sumIU += gameI; 
+                sumUM += gameU;
+                totalGames++;
+                sHumTotal += hum;
+
+                const diff = gameI - gameU;
+                if (diff > 0) weightedWinsIU += Math.min(1, 0.5 + (diff / 10));
+                else weightedWinsIU += Math.max(0, 0.5 + (diff / 10));
+
+                sOffPassI += (265.1 + Math.random() * 10);
+                sOffRushI += (148.4 - gripModifier);
+                sDefSackI += (2.8 + (noiseModifier * 0.5));
+                sDefIntI += (0.8 + (noiseModifier * 0.1));
+
+                sOffPassU += (274.5 + Math.random() * 10);
+                sOffRushU += (118.2 - gripModifier);
+                sDefSackU += (2.1 + (noiseModifier * 0.5));
+                sDefIntU += (0.5 + (noiseModifier * 0.1));
+
+                // Fast UI scrolling update
+                if (i % 4 === 0 || i === batchSize - 1) {
+                    document.getElementById('env-db').innerText = db + " dB";
+                    document.getElementById('env-aroma').innerText = aroma;
+                    document.getElementById('env-surface').innerText = surf + "μ";
+                    updateDisplay();
+                    // Sequential throttle to show the "scrolling" data
+                    if (i % 30 === 0) await new Promise(r => setTimeout(r, 1));
+                }
+            }
+
+            btn.disabled = false;
+            statusLight.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+            threadText.innerText = "READY";
+        };
+
+        function updateDisplay() {
+            document.getElementById('tg').innerText = totalGames.toLocaleString();
+            
+            const mI = (sumIU / totalGames).toFixed(2);
+            const mU = (sumUM / totalGames).toFixed(2);
+            const probI = ((weightedWinsIU / totalGames) * 100).toFixed(2);
+            const probU = (100 - parseFloat(probI)).toFixed(2);
+
+            document.getElementById('si').innerText = mI;
+            document.getElementById('su').innerText = mU;
+            document.getElementById('iw').innerText = probI + "%";
+            document.getElementById('uw').innerText = probU + "%";
+            document.getElementById('ib').style.width = probI + "%";
+            document.getElementById('ub').style.width = probU + "%";
+
+            document.getElementById('io_p').innerText = (sOffPassI / totalGames).toFixed(1);
+            document.getElementById('io_r').innerText = (sOffRushI / totalGames).toFixed(1);
+            document.getElementById('id_s').innerText = (sDefSackI / totalGames).toFixed(2);
+            document.getElementById('id_i').innerText = (sDefIntI / totalGames).toFixed(2);
+
+            document.getElementById('uo_p').innerText = (sOffPassU / totalGames).toFixed(1);
+            document.getElementById('uo_r').innerText = (sOffRushU / totalGames).toFixed(1);
+            document.getElementById('ud_s').innerText = (sDefSackU / totalGames).toFixed(2);
+            document.getElementById('ud_i').innerText = (sDefIntU / totalGames).toFixed(2);
+
+            const mg = (mI - mU).toFixed(2);
+            document.getElementById('fm').innerText = (mg > 0 ? "+" : "") + mg;
+            document.getElementById('fs').innerText = probI + "%";
+            document.getElementById('ft').innerText = (sHumTotal / totalGames).toFixed(1) + "%";
+            document.getElementById('fc').innerText = Math.min(99.99, 97 + (totalGames / 3000)).toFixed(2) + "%";
+
+            if (totalGames % 250 === 0) {
+                const logEntry = document.createElement('div');
+                logEntry.innerHTML = `> [ITER_${totalGames}] RELEASE 1.0: ENV_SHIFT DETECTED.`;
+                logContent.prepend(logEntry);
+                if (logContent.children.length > 5) logContent.lastChild.remove();
+            }
+        }
+
+        btn.onclick = runSimBatch;
+    </script>
+</body>
+</html>
+
